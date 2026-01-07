@@ -1,4 +1,3 @@
-
 ![.NET](https://img.shields.io/badge/.NET%208-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
@@ -54,6 +53,7 @@ Follow these steps to run the project locally.
 
 ### 1. Database Setup
 Execute the following SQL script in your PostgreSQL database:
+
 ```sql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -66,10 +66,44 @@ CREATE TABLE users (
     verification_token VARCHAR(6),
     token_expiry TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);```
-
-### 2. Backend Setup (.NET)
+);
+2. Backend Setup (.NET)
 Navigate to the backend folder.
 Configure Secrets: (Do not skip this, as appsettings.json does not contain sensitive keys).
-
-
+code
+Bash
+dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Database=YOUR_DB;Username=postgres;Password=YOUR_PASSWORD"
+dotnet user-secrets set "EmailSettings:SmtpServer" "smtp.gmail.com"
+dotnet user-secrets set "EmailSettings:SmtpPort" "587"
+dotnet user-secrets set "EmailSettings:SenderEmail" "YOUR_EMAIL@gmail.com"
+dotnet user-secrets set "EmailSettings:SenderPassword" "YOUR_APP_PASSWORD"
+dotnet user-secrets set "JwtSettings:Key" "YOUR_SUPER_LONG_SECRET_KEY_MIN_64_CHARS"
+dotnet user-secrets set "JwtSettings:Issuer" "MySecureApp_Server"
+dotnet user-secrets set "JwtSettings:Audience" "MySecureApp_Client"
+Run the server:
+code
+Bash
+dotnet restore
+dotnet run
+Server will start at http://localhost:5113.
+3. Frontend Setup (Vue)
+Navigate to the frontend folder.
+Install dependencies:
+code
+Bash
+npm install
+Run the development server:
+code
+Bash
+npm run serve
+Open http://localhost:8080.
+📡 API Endpoints
+Method	Endpoint	Description	Auth Required
+POST	/api/Auth/register	Register new user & send OTP	❌
+POST	/api/Auth/login	Login via Email/User/Phone	❌
+POST	/api/Auth/verify-otp	Verify Email/Phone OTP	❌
+POST	/api/Auth/resend-otp	Request new OTP code	❌
+GET	/api/Auth/check-session	Validate Token Session	✅ (Bearer)
+📸 Screenshots
+(You can add screenshots of your Login Page, Email OTP, and Swagger UI here)
