@@ -54,7 +54,6 @@ Follow these steps to run the project locally.
 
 ### 1. Database Setup
 Execute the following SQL script in your PostgreSQL database:
-
 ```sql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -67,4 +66,10 @@ CREATE TABLE users (
     verification_token VARCHAR(6),
     token_expiry TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+);```
+
+### 2. Backend Setup (.NET)
+Navigate to the backend folder.
+Configure Secrets: (Do not skip this, as appsettings.json does not contain sensitive keys).
+
+
