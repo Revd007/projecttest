@@ -210,7 +210,9 @@ npm run serve
 
 ## 📸 Screenshots
 
-> <img width="1599" height="828" alt="Screenshot 2026-01-07 095508" src="https://github.com/user-attachments/assets/13a1c8f8-aecc-42a2-8e48-29aedac6705a" />
+
+> <img width="416" height="398" alt="Screenshot 2026-01-07 145754" src="https://github.com/user-attachments/assets/dfb801c1-a319-4075-903a-1d6a809b0053" />
+
 
 
 ---
