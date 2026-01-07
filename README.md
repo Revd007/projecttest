@@ -210,7 +210,8 @@ npm run serve
 
 ## 📸 Screenshots
 
-> *Tambahkan screenshot Login Page, OTP Email, dan Swagger UI di sini*
+> <img width="1599" height="828" alt="Screenshot 2026-01-07 095508" src="https://github.com/user-attachments/assets/13a1c8f8-aecc-42a2-8e48-29aedac6705a" />
+
 
 ---
 
