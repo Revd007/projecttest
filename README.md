@@ -3,56 +3,88 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-Secure-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 
+# 🔐 Secure Auth System  
+**.NET 8 + Vue 3 + PostgreSQL + JWT**
+
+---
+
 ## 🌟 Key Features
 
 ### 🔐 Backend Security (.NET 8)
-- **Cryptographic JWT:** Tokens are signed using **HMAC-SHA512** for maximum security against tampering.
-- **Secure Password Hashing:** Implemented **BCrypt** with automatic salting.
-- **Rate Limiting:** Protects against Brute Force & DDoS attacks (max 5 requests/minute).
-- **Input Sanitization:** **HtmlSanitizer** integration to prevent XSS (Cross-Site Scripting) attacks via input fields.
-- **Strict CORS:** API access is locked strictly to the frontend origin.
-- **Secure Configuration:** Database credentials and SMTP secrets are stored in **.NET User Secrets** (not hardcoded).
-- **HTTP Security Headers:** Anti-MIME Sniffing, Anti-Clickjacking (`X-Frame-Options`), and XSS Protection headers.
+- **Cryptographic JWT**  
+  Token signing menggunakan **HMAC-SHA512** untuk mencegah token tampering.
+- **Secure Password Hashing**  
+  Password di-hash menggunakan **BCrypt** dengan auto-salt.
+- **Rate Limiting**  
+  Proteksi brute force & DDoS (**max 5 request / menit**).
+- **Input Sanitization**  
+  Menggunakan **HtmlSanitizer** untuk mencegah XSS.
+- **Strict CORS Policy**  
+  API hanya bisa diakses dari origin frontend.
+- **Secure Configuration**  
+  Credential DB & SMTP disimpan di **.NET User Secrets**.
+- **HTTP Security Headers**
+  - `X-Content-Type-Options`
+  - `X-Frame-Options`
+  - `X-XSS-Protection`
+
+---
 
 ### 👤 User Management & Verification
-- **Multi-Channel Login:** Login via **Username**, **Email**, or **Phone Number**.
-- **Mandatory Verification:**
-  - Unverified users are blocked (403 Forbidden) and auto-redirected to the verification page.
-  - **Email OTP:** Integrated with **Gmail SMTP** (MailKit) to send HTML-formatted OTP codes.
-  - **Phone OTP:** Logic ready (currently simulated via Server Console for cost-efficiency).
-- **Token Management:** Database handles OTP expiry (10 minutes validity) to prevent replay attacks.
+- **Multi-Channel Login**
+  - Username
+  - Email
+  - Phone Number
+- **Mandatory Verification**
+  - User belum terverifikasi → **403 Forbidden**
+  - Auto-redirect ke halaman verifikasi
+- **OTP Verification**
+  - **Email OTP** via Gmail SMTP (MailKit)
+  - **Phone OTP** (simulasi via Server Console)
+- **OTP Security**
+  - Expiry **10 menit**
+  - Disimpan di database (anti replay attack)
+
+---
 
 ### 💻 Frontend (Vue 3 + Vite)
-- **State Management:** **Pinia** for centralized auth state handling.
-- **Axios Interceptors:** Automatic token injection (`Authorization: Bearer ...`) and global error handling (auto-logout on 401).
-- **Client-Side Security:**
-  - **Custom CAPTCHA** implementation on login.
-  - **Content Security Policy (CSP)** meta tags implemented.
-- **UX Improvements:** Auto-detection of verification status, countdown timers for OTP resend, and password visibility toggles.
+- **State Management:** Pinia
+- **Axios Interceptors**
+  - Auto inject `Authorization: Bearer <token>`
+  - Auto logout saat `401 Unauthorized`
+- **Client-Side Security**
+  - Custom CAPTCHA pada login
+  - Content Security Policy (CSP)
+- **UX Enhancements**
+  - Auto-detect verification status
+  - OTP resend countdown
+  - Password visibility toggle
 
 ---
 
 ## 🏗️ Architecture
 
-The backend follows **Clean Architecture** principles to ensure maintainability:
-- **Controllers:** Handle HTTP Requests/Responses.
-- **Services:** Business logic separation (`EmailService`, `TokenService`).
-- **DTOs:** Data Transfer Objects to decouple internal models from API contracts.
-- **Models:** Entity Framework Core models mapping to PostgreSQL.
+Mengikuti prinsip **Clean Architecture**:
+
+- **Controllers** → HTTP request/response
+- **Services** → Business logic (`EmailService`, `TokenService`)
+- **DTOs** → API contract abstraction
+- **Models** → EF Core entity (PostgreSQL)
 
 ---
 
 ## 🚀 Getting Started
 
-Follow these steps to run the project locally.
-
 ### Prerequisites
 - .NET SDK 8.0
 - Node.js & npm
-- PostgreSQL Database
+- PostgreSQL
 
-### 1. Database Setup
-Execute the following SQL script in your PostgreSQL database:
+---
+
+## 1️⃣ Database Setup
+
+Jalankan SQL berikut di PostgreSQL:
 
 ```sql
 CREATE TABLE users (
@@ -67,43 +99,51 @@ CREATE TABLE users (
     token_expiry TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-2. Backend Setup (.NET)
-Navigate to the backend folder.
-Configure Secrets: (Do not skip this, as appsettings.json does not contain sensitive keys).
-code
-Bash
+2️⃣ Backend Setup (.NET 8)
+Masuk ke folder backend lalu jalankan:
+
+Initialize User Secrets
+bash
+Copy code
 dotnet user-secrets init
+Configure Secrets
+bash
+Copy code
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Database=YOUR_DB;Username=postgres;Password=YOUR_PASSWORD"
+
 dotnet user-secrets set "EmailSettings:SmtpServer" "smtp.gmail.com"
 dotnet user-secrets set "EmailSettings:SmtpPort" "587"
 dotnet user-secrets set "EmailSettings:SenderEmail" "YOUR_EMAIL@gmail.com"
 dotnet user-secrets set "EmailSettings:SenderPassword" "YOUR_APP_PASSWORD"
+
 dotnet user-secrets set "JwtSettings:Key" "YOUR_SUPER_LONG_SECRET_KEY_MIN_64_CHARS"
 dotnet user-secrets set "JwtSettings:Issuer" "MySecureApp_Server"
 dotnet user-secrets set "JwtSettings:Audience" "MySecureApp_Client"
-Run the server:
-code
-Bash
+Run Server
+bash
+Copy code
 dotnet restore
 dotnet run
-Server will start at http://localhost:5113.
-3. Frontend Setup (Vue)
-Navigate to the frontend folder.
-Install dependencies:
-code
-Bash
+📍 Backend running at:
+http://localhost:5113
+
+3️⃣ Frontend Setup (Vue 3)
+Masuk ke folder frontend:
+
+bash
+Copy code
 npm install
-Run the development server:
-code
-Bash
 npm run serve
-Open http://localhost:8080.
+📍 Frontend running at:
+http://localhost:8080
+
 📡 API Endpoints
-Method	Endpoint	Description	Auth Required
-POST	/api/Auth/register	Register new user & send OTP	❌
-POST	/api/Auth/login	Login via Email/User/Phone	❌
-POST	/api/Auth/verify-otp	Verify Email/Phone OTP	❌
-POST	/api/Auth/resend-otp	Request new OTP code	❌
-GET	/api/Auth/check-session	Validate Token Session	✅ (Bearer)
+Method	Endpoint	Description	Auth
+POST	/api/Auth/register	Register user + send OTP	❌
+POST	/api/Auth/login	Login (Email/User/Phone)	❌
+POST	/api/Auth/verify-otp	Verify Email / Phone OTP	❌
+POST	/api/Auth/resend-otp	Request new OTP	❌
+GET	/api/Auth/check-session	Validate JWT session	✅
+
 📸 Screenshots
-(You can add screenshots of your Login Page, Email OTP, and Swagger UI here)
+(Tambahkan screenshot Login Page, OTP Email, dan Swagger UI di sini)
