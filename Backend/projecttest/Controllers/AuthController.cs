@@ -9,6 +9,7 @@ using projecttest.Dtos;
 using projecttest.Models;
 using projecttest.Services;
 using System.Text.RegularExpressions;
+using static System.Net.WebRequestMethods;
 
 namespace projecttest.Controllers
 {
@@ -20,13 +21,15 @@ namespace projecttest.Controllers
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
+        private readonly IUrlSignerService _urlSignerService;
 
-        public AuthController(AppDbContext context, IConfiguration configuration, IEmailService emailService, ITokenService tokenService)
+        public AuthController(AppDbContext context, IConfiguration configuration, IEmailService emailService, ITokenService tokenService, IUrlSignerService urlSignerService)
         {
             _context = context;
             _configuration = configuration;
             _emailService = emailService;
             _tokenService = tokenService;
+            _urlSignerService = urlSignerService;
         }
 
         [HttpPost("login")]
@@ -106,6 +109,10 @@ namespace projecttest.Controllers
             var sanitizer = new HtmlSanitizer();
             string safeUsername = sanitizer.Sanitize(req.Username);
             string safeEmail = sanitizer.Sanitize(req.Email);
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            string signature = _urlSignerService.GenerateSignature(req.Email, timestamp);
+            string safeSig = System.Net.WebUtility.UrlEncode(signature);
+            string verificationLink = $"http://localhost:8080/verify?identifier={req.Email}&type=email&ts={timestamp}&sig={safeSig}";
 
             if (await _context.Users.AnyAsync(u => u.Username == safeUsername))
                 return BadRequest(new { message = "Username sudah digunakan" });
@@ -128,8 +135,6 @@ namespace projecttest.Controllers
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
 
-            string verificationLink = $"http://localhost:8080/verify?identifier={req.Email}&type=email";
-
             string emailBody = $@"
         <div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>
             <h2 style='color: #667eea;'>Verifikasi Akun ProjectTest</h2>
@@ -138,7 +143,7 @@ namespace projecttest.Controllers
             
             <h1 style='background: #f4f4f4; padding: 10px; text-align: center; letter-spacing: 5px; border-radius: 5px;'>{otp}</h1>
             
-            <p>Atau klik tombol di bawah ini untuk langsung verifikasi:</p>
+            <p>Atau klik tombol di bawah ini untuk langsung verifikasi (Berlaku 30 menit):</p>
             <div style='text-align: center; margin: 20px 0;'>
                 <a href='{verificationLink}' style='background-color: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Verifikasi Sekarang</a>
             </div>
@@ -256,6 +261,64 @@ namespace projecttest.Controllers
                     debugOtp = otp
                 });
             }
+        }
+
+        [HttpPost("verify-signed")]
+        public async Task<IActionResult> VerifySigned([FromBody] VerifySignedRequest req)
+        {
+            if (!_urlSignerService.ValidateSignature(req.Identifier, req.Timestamp, req.Signature))
+            {
+                return BadRequest(new { message = "Link Verifikasi Invalid atau Sudah Kadaluarsa (Expired)." });
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == req.Identifier);
+            if (user == null) return BadRequest(new { message = "Users Tidak Ditemukan" });
+            if (user.VerificationToken != req.OtpCode) return BadRequest(new { message = "Kode OTP Salah!" });
+
+            user.EmailVerified = true;
+            user.VerificationToken = null;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Verifikasi Berhasil via Link Aman" });
+        }
+
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetProfile()
+        {
+            var username = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null) return NotFound();
+
+            return Ok(new
+            {
+                user.Username,
+                user.Email,
+                user.PhoneNumber,
+                user.EmailVerified,
+                user.PhoneVerified
+            });
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest req)
+        {
+            if (req.NewPassword != req.ConfirmNewPassword)
+                return BadRequest(new {message = "Konfirmasi password baru tidak cocok"});
+
+            var username = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null) return Unauthorized();
+
+            if (!BCrypt.Net.BCrypt.Verify(req.OldPassword, user.PasswordHash))
+                return BadRequest(new { message = "Password Lama Salah" });
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.NewPassword);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Passwod telah berhasil diubah" });
         }
 
         [HttpGet("check-session")]

@@ -23,5 +23,26 @@
         string Password
     );
 
-    public record VerifyOtpRequest(string Identifier, string OtpCode);
+    public record VerifyOtpRequest(
+        string Identifier, 
+        string OtpCode
+    );
+
+    public record ChangePasswordRequest(
+        string OldPassword,
+        string NewPassword,
+        string ConfirmNewPassword
+    );
+
+    public record UpdateProfilRequest(
+        string Username,
+        string PhoneNumber
+    );
+
+    public record VerifySignedRequest(
+        string Identifier,
+        string OtpCode,
+        long Timestamp,
+        string Signature
+    );
 }

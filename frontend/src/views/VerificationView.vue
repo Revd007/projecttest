@@ -51,7 +51,8 @@ import apiClient from '@/services/apiServices'
 
 const route = useRoute()
 const router = useRouter()
-
+const timestamp = ref(0)
+const signature = ref('')
 const identifier = ref('')
 const otpCode = ref('')
 const loading = ref(false)
@@ -61,10 +62,13 @@ const isLocked = ref(false)
 const countdown = ref(0)
 
 onMounted(() => {
-  const queryId = route.query.identifier
-  if (queryId) {
-    identifier.value = queryId
-    isLocked.value = true
+  const q = route.query
+  identifier.value = q.identifier || ''
+  
+  // Ambil parameter security
+  if (q.ts && q.sig) {
+    timestamp.value = q.ts
+    signature.value = q.sig
   }
 })
 
@@ -96,29 +100,27 @@ const requestOtp = async () => {
 }
 
 const submitOtp = async () => {
-  if (!identifier.value) {
-    error.value = "Email wajib diisi!"
-    return
-  }
-  if (otpCode.value.length < 6) {
-    error.value = "Masukkan 6 digit kode OTP!"
-    return
-  }
-
   try {
-    loading.value = true
-    error.value = ''
+    loading.value = true; error.value = ''
     
-    await apiClient.post('/Auth/verify-otp', {
-      identifier: identifier.value.trim(), 
-      otpCode: otpCode.value.trim()
-    })
+    if (timestamp.value && signature.value) {
+        await apiClient.post('/Auth/verify-signed', {
+            identifier: identifier.value,
+            otpCode: otpCode.value,
+            timestamp: parseInt(timestamp.value),
+            signature: signature.value
+        })
+    } else {
+        await apiClient.post('/Auth/verify-otp', {
+            identifier: identifier.value.trim(), 
+            otpCode: otpCode.value.trim()
+        })
+    }
 
-    success.value = "Verifikasi Berhasil! Mengalihkan..."
+    success.value = "Sukses! Mengalihkan..."
     setTimeout(() => router.push('/login'), 2000)
-
   } catch (err) {
-    error.value = err.response?.data?.message || "Gagal verifikasi."
+    error.value = err.response?.data?.message || "Gagal."
   } finally {
     loading.value = false
   }
@@ -136,65 +138,5 @@ const backToLogin = () => router.push('/login')
 </script>
 
 <style scoped>
-.resend-container {
-  margin-bottom: 15px;
-  text-align: right;
-}
-.btn-resend {
-  background: none;
-  border: none;
-  color: #667eea;
-  font-size: 13px;
-  cursor: pointer;
-  text-decoration: underline;
-}
-.btn-resend:disabled {
-  color: #999;
-  cursor: not-allowed;
-  text-decoration: none;
-}
-.auth-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-}
-.auth-card {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-}
-.header h1 { margin-bottom: 10px; color: #333; }
-.form-group { margin-bottom: 15px; text-align: left; }
-label { font-size: 14px; font-weight: bold; color: #555; display: block; margin-bottom: 5px; }
-
-/* Input Biasa */
-.std-input {
-  width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;
-}
-
-/* Input OTP Besar */
-.otp-input {
-  width: 100%; font-size: 24px; letter-spacing: 8px; text-align: center;
-  padding: 10px; border: 2px solid #ddd; border-radius: 8px;
-}
-.otp-input:focus, .std-input:focus { border-color: #667eea; outline: none; }
-
-.btn-primary {
-  width: 100%; padding: 14px; background: #667eea; color: white;
-  border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
-}
-.btn-primary:hover { background: #5a67d8; }
-.btn-primary:disabled { background: #ccc; }
-
-.error-message { color: #c53030; background: #fff5f5; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
-.success-message { color: #276749; background: #f0fff4; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
-.link-text { margin-top: 20px; cursor: pointer; color: #666; font-size: 14px; }
-.link-text:hover { text-decoration: underline; color: #667eea; }
+@import "@/assets/css/auth.css";
 </style>

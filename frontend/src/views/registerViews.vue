@@ -122,74 +122,7 @@ const handleRegister = async () => {
 }
 </script>
 
+<!-- CUMA INI STYLE NYA SEKARANG -->
 <style scoped>
-* { box-sizing: border-box; }
-
-.auth-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-}
-
-.auth-card {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 420px;
-}
-
-.header { text-align: center; margin-bottom: 30px; }
-.header h1 { margin: 0; color: #333; font-size: 28px; }
-.header p { color: #666; margin-top: 5px; }
-
-.form-group { margin-bottom: 18px; }
-label { display: block; margin-bottom: 6px; color: #444; font-weight: 600; font-size: 14px; }
-
-input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
-  transition: border-color 0.3s;
-}
-input:focus { outline: none; border-color: #667eea; }
-
-.input-wrapper { position: relative; width: 100%; }
-.input-wrapper input { padding-right: 45px;}
-
-.eye-icon {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #888;
-  display: flex;
-  align-items: center;
-}
-.eye-icon:hover { color: #667eea; }
-
-.input-error { border-color: #e53e3e !important; background-color: #fff5f5; }
-.text-danger { color: #e53e3e; font-size: 12px; margin-top: 4px; display: block; }
-
-.btn-primary {
-  width: 100%; padding: 14px; background: #667eea; color: white;
-  border: none; border-radius: 8px; font-weight: bold; font-size: 16px;
-  cursor: pointer; transition: background 0.3s; margin-top: 10px;
-}
-.btn-primary:hover:not(:disabled) { background: #5a67d8; }
-.btn-primary:disabled { background: #cbd5e0; cursor: not-allowed; }
-
-.error-message { background: #fff5f5; color: #c53030; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center; border: 1px solid #feb2b2; }
-.success-message { background: #f0fff4; color: #276749; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center; border: 1px solid #9ae6b4; }
-
-.link-text { text-align: center; margin-top: 25px; font-size: 14px; color: #666; }
-a { color: #667eea; text-decoration: none; font-weight: 600; }
-a:hover { text-decoration: underline; }
+@import "@/assets/css/auth.css";
 </style>

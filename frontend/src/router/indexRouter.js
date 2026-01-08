@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/authStores'
+import ProfileView from '@/views/ProfileViews.vue'
+import ChangePasswordView from '@/views/ChangePasswordView.vue'
 
 const routes = [
     {
@@ -13,6 +15,18 @@ const routes = [
         name: 'Register',
         component: () => import('@/views/registerViews.vue'),
         meta: { requireGuest: true}
+    },
+    {
+        path: '/profile',
+        name: 'Profile',
+        component: ProfileView,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/change-password',
+        name: 'ChangePassword',
+        component: ChangePasswordView,
+        meta: { requiresAuth: true }
     },
     {
         path: '/verify',

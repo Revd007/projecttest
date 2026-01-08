@@ -1,0 +1,170 @@
+.home-container, .container {
+    min-height: 100vh;
+    background-color: #f3f4f6;
+    padding-bottom: 40px;
+    padding-top: 20px;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin: 0 auto; /* Center card */
+}
+
+.dashboard-header {
+    background: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+.user-info { display: flex; align-items: center; gap: 15px; }
+.avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #667eea; }
+.role-text { color: #888; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;}
+
+.header-actions { display: flex; gap: 15px; }
+
+.info-group {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.info-group label {
+    font-weight: bold;
+    color: #555;
+    font-size: 12px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-profile, .btn-secondary {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+    text-decoration: none;
+}
+
+.btn-logout, .btn-danger {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-profile:hover { background: #5a67d8; }
+.btn-logout:hover { background: #dc2626; }
+
+.content-area {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.loading-state, .error-state {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    background: white;
+    border-radius: 8px;
+}
+
+.profile-card {
+  max-width: 700px; /* Lebih lebar dikit */
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 2px solid #f3f4f6;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 4px solid #eef2ff;
+}
+
+.profile-title h2 { margin: 0 0 5px 0; font-size: 24px; color: #333; }
+.badge-role { background: #e0e7ff; color: #4338ca; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; letter-spacing: 1px; }
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.detail-label { font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 8px; width: 150px; }
+.detail-content { flex: 1; display: flex; justify-content: space-between; align-items: center; }
+.value { font-weight: 500; color: #334155; font-size: 16px; }
+
+/* Status Badges */
+.status-badge {
+  font-size: 13px; font-weight: bold; padding: 5px 10px; border-radius: 6px;
+}
+.verified { background: #dcfce7; color: #166534; }
+
+.btn-verify {
+  background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5;
+  padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;
+}
+.btn-verify:hover { background: #ffedd5; transform: translateY(-1px); }
+
+.divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+
+.profile-actions { display: flex; gap: 15px; justify-content: flex-end; }
+
+.spinner {
+    display: inline-block; width: 20px; height: 20px;
+    border: 3px solid #eee; border-top-color: #667eea;
+    border-radius: 50%; animation: spin 1s linear infinite;
+    margin-right: 10px; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Profile Specific */
+.btn-secondary {
+    background-color: #64748b; color: white;
+    padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600;
+}
+.btn-secondary:hover { background-color: #475569; }
+
+.btn-danger {
+    background-color: #ef4444; color: white;
+    padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600;
+}
+.btn-danger:hover { background-color: #dc2626; }

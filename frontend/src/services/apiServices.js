@@ -46,6 +46,18 @@ export const authAPI = {
         const response = await apiClient.post('/auth/register', userData);
         return response.data;
     },
+    verifySigned: async (data) => {
+        const response = await apiClient.post("/auth/verify-signed", data);
+        return response.data; 
+    },
+    getProfile: async() => {
+        const response = await apiClient.get("/auth/profile");
+        return response.data;
+    },
+    changePassword: async (passwordData) => {
+        const response = await apiClient.post('/Auth/change-password', passwordData);
+        return response.data;
+    },
     getProducts: async () => {
         const response = await apiClient.get('/auth/products'); 
         return response.data;
